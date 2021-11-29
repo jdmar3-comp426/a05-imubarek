@@ -34,15 +34,23 @@ app.get("/app/", (req, res, next) => {
 // CREATE a new user (HTTP method POST) at endpoint /app/new/
 //new/user or new/
 app.post("/app/new/", (req, res) => {	
+
+	//const stmt = db.prepare("INSERT INTO userinfo (user,pass,email) VALUES (?,?,?) ON CONFLICT(user) DO UPDATE SET user=?") ;
+
+	//const info = stmt.run(req.body.user, md5(req.body.pass),req.body.email,req.body.user);
 	const stmt = db.prepare("INSERT INTO userinfo (user,pass,email) VALUES (?,?,?)") ; 
-	const info = stmt.run(req.body.user, md5(req.body.pass),req.body.email); 
-	console.log(req.body) ; 
+	//const info = stmt.run(req.body.user, md5(req.body.pass),req.body.email);
+	const info = stmt.run(req.body.user, req.body.pass,req.body.email);
+
+	//console.log(req.body) ;
+
 	res.status(201).json({"message" : "1 record created: ID " + info.lastInsertRowid + " (201)"}) ; 
 });
 
 // READ a list of all users (HTTP method GET) at endpoint /app/users/
 app.get("/app/users", (req, res) => {	
 	const stmt = db.prepare("SELECT * FROM userinfo").all();
+	//console.log(stmt) ;
 	res.status(200).json(stmt);
 	
 });
